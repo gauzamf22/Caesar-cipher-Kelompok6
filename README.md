@@ -13,11 +13,11 @@ https://www.figma.com/design/I8XwtgdCFoEK9Ae1jvOx8i/Caesar-Cipher?node-id=0-1&t=
 
 ### Anggota Kelompok:
 
-1. 555306 - Gradient
-2. 555851 - Gauza
-3. 561611 - Nidya
-4. 564999 - Aziz
-5. 568048 - Sadhu
+1. 555306/Gradien
+2. 555851/Gauza
+3. 561611/Nidya
+4. 564999/Aziz
+5. 568048/Sadhu
 
 ---
 
