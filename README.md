@@ -9,7 +9,7 @@ https://www.figma.com/design/I8XwtgdCFoEK9Ae1jvOx8i/Caesar-Cipher?node-id=0-1&t=
 
 - **Mata Kuliah**: Kriptografi dan Keamanan Informasi
 - **Kelas**: KOM A
-- **Kelompok**: Kelompok 6 KOM A
+- **Kelompok**: KOM A
 
 ### Anggota Kelompok:
 
