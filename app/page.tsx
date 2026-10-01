@@ -32,13 +32,9 @@ export default function Page() {
   const [mode, setMode] = useState<'enc' | 'dec'>('enc');
 
   // Encryption & Decryption state
-  const [text, setText] = useState('Hello, World! 123');
+  const [text, setText] = useState('');
   const [shiftKey, setShiftKey] = useState(1);
   const [isCopied, setIsCopied] = useState(false);
-
-  // Brute Force state
-  const [bfInput, setBfInput] = useState('');
-  const [bfRows, setBfRows] = useState<BruteForceRow[]>([]);
 
   // Test Cases state
   const [simulateBug, setSimulateBug] = useState(false);
@@ -51,25 +47,9 @@ export default function Page() {
 
   // Computed cipher output
   const output = useMemo(() => {
+    if (!text) return '';
     return caesar(text, mode === 'enc' ? shiftKey : -shiftKey);
   }, [text, mode, shiftKey]);
-
-  // Observer for reveal animations on tab change
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-          }
-        });
-      },
-      { threshold: 0.12 }
-    );
-
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [activeTab, testResults.length]);
 
   // Copy handler
   const handleCopy = () => {
@@ -79,17 +59,88 @@ export default function Page() {
     setTimeout(() => setIsCopied(false), 1400);
   };
 
-  // Brute force solver handler
-  const handleBruteForce = (inputStr?: string) => {
-    const query = inputStr !== undefined ? inputStr : bfInput;
-    const resolvedRows = solveBruteForce(query);
-    setBfRows(resolvedRows);
+  // Brute Force state
+  const [bfInput, setBfInput] = useState('');
+  const [bfRows, setBfRows] = useState<BruteForceRow[]>([]);
+  const [bfLoading, setBfLoading] = useState(false);
+  const [bfError, setBfError] = useState<string | null>(null);
+  const [bfHistory, setBfHistory] = useState<any[]>([]);
+  const [bfHistoryLoading, setBfHistoryLoading] = useState(false);
+
+  // Fetch recent brute force history from Supabase backend
+  const fetchBfHistory = async () => {
+    try {
+      setBfHistoryLoading(true);
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+      const res = await fetch(`${backendUrl}/api/brute-force?limit=6`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setBfHistory(json.data);
+        }
+      }
+    } catch (err) {
+      console.warn('Gagal memuat riwayat dari backend Supabase:', err);
+    } finally {
+      setBfHistoryLoading(false);
+    }
+  };
+
+  // Muat riwayat saat tab brute force dibuka
+  useEffect(() => {
+    if (activeTab === 'brute') {
+      fetchBfHistory();
+    }
+  }, [activeTab]);
+
+  // Brute force solver handler with backend fetch & error management
+  const handleBruteForce = async (inputStr?: string) => {
+    const query = (inputStr !== undefined ? inputStr : bfInput).trim();
+    if (!query) {
+      setBfError('Silakan masukkan ciphertext terlebih dahulu.');
+      return;
+    }
+
+    setBfLoading(true);
+    setBfError(null);
+
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+      const res = await fetch(`${backendUrl}/api/brute-force`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ciphertext: query }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Gagal memproses brute force di backend.');
+      }
+
+      setBfRows(data.data.results);
+      // Segarkan riwayat Supabase
+      fetchBfHistory();
+    } catch (err: any) {
+      console.warn('Backend request failed, using client fallback:', err);
+      const fallbackRows = solveBruteForce(query);
+      setBfRows(fallbackRows);
+      setBfError(`Kendala backend / jaringan: ${err.message || 'Gagal memanggil server'}. Menampilkan kalkulasi lokal.`);
+    } finally {
+      setBfLoading(false);
+    }
   };
 
   const handleSampleBruteForce = () => {
     const sample = 'WKLV LV D VHFUHW PHVVDJH';
     setBfInput(sample);
+    setBfError(null);
     setTimeout(() => handleBruteForce(sample), 0);
+  };
+
+  const handleSelectHistoryItem = (item: any) => {
+    setBfInput(item.ciphertext);
+    setBfRows(item.results || []);
+    setBfError(null);
   };
 
   // Test cases handlers
@@ -198,8 +249,14 @@ export default function Page() {
           bf={bfInput}
           setBf={setBfInput}
           bfRows={bfRows}
+          loading={bfLoading}
+          error={bfError}
+          history={bfHistory}
+          historyLoading={bfHistoryLoading}
+          onClearError={() => setBfError(null)}
           onBruteForce={() => handleBruteForce()}
           onSampleText={handleSampleBruteForce}
+          onSelectHistory={handleSelectHistoryItem}
         />
       )}
 

@@ -89,6 +89,7 @@ export function CryptPanel({
             spellCheck={false}
             value={text}
             onChange={(e) => setText(e.target.value)}
+            placeholder={isEncrypt ? 'Ketik plaintext di sini...' : 'Ketik ciphertext di sini...'}
           />
         </div>
 
@@ -101,14 +102,18 @@ export function CryptPanel({
             readOnly
             spellCheck={false}
             value={output}
+            placeholder={isEncrypt ? 'Hasil ciphertext akan muncul di sini...' : 'Hasil plaintext akan muncul di sini...'}
           />
-          <button
-            type="button"
-            className="copy"
-            onClick={onCopy}
-          >
-            {copied ? 'Copied!' : 'Copy'}
-          </button>
+          {output && (
+            <button
+              type="button"
+              className="copy"
+              onClick={onCopy}
+              title="Salin hasil ke clipboard"
+            >
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          )}
         </div>
       </div>
     </section>

@@ -9,21 +9,21 @@ https://www.figma.com/design/I8XwtgdCFoEK9Ae1jvOx8i/Caesar-Cipher?node-id=0-1&t=
 
 - **Mata Kuliah**: Kriptografi dan Keamanan Informasi
 - **Kelas**: KOM A
-- **Kelompok**: KOM A
+- **Kelompok**: Kelompok 6
 
 ### Anggota Kelompok:
 
-1. 555306/Gradien
-2. 555851/Gauza
-3. 561611/Nidya
-4. 564999/Aziz
-5. 568048/Sadhu
+1. 555306-Gradien
+2. 555851-Gauza
+3. 561611-Nidya
+4. 564999-Aziz
+5. 568048-Sadhu
 
 ---
 
 ## Deskripsi Aplikasi
 
-Caesar Cipher Toolkit merupakan aplikasi web interaktif yang dikembangkan untuk memfasilitasi demonstrasi, analisis matematis, serta pengujian algoritma kriptografi klasik Caesar Cipher (Shift Cipher).
+Caesar Cipher Toolkit merupakan aplikasi web yang dikembangkan untuk memfasilitasi demonstrasi, tugas kelompok mata kuliah kriptografi dan keamanan informasi, analisis matematis, serta pengujian algoritma kriptografi klasik Caesar Cipher (Shift Cipher).
 
 ---
 
