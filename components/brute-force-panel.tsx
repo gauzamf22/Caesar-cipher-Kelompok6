@@ -41,7 +41,7 @@ export function BruteForcePanel({
   return (
     <section className="panel active reveal">
       <p className="hint">
-        Caesar Cipher memiliki 25 kemungkinan key (k = 1 s.d. 25). Semua 25 kemungkinan diuji secara lengkap.
+        Caesar Cipher memiliki 25 kemungkinan key (k = 1 s.d. 25). Semua 25 kemungkinan diuji secara bertahap.
       </p>
 
       {error && (
